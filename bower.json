@@ -1,0 +1,27 @@
+{
+  "name": "wp-pullman-security",
+  "version": "0.0.1",
+  "main": [
+    "js/reveal.js",
+    "css/reveal.css"
+  ],
+  "homepage": "https://github.com/jeremyfelt/wp-pullman-security",
+  "license": "MIT",
+  "description": "A security talk for WP Pullman",
+  "authors": [
+    "Jeremy Felt <jeremyfelt@gmail.com>"
+  ],
+  "dependencies": {
+    "headjs": "~1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jeremyfelt/wp-pullman-security.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ]
+}
