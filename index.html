@@ -7,7 +7,7 @@
 		<title>A Security Talk for WP Pullman</title>
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/simple.css">
+		<link rel="stylesheet" href="css/theme/black.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -20,14 +20,183 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
+
+		<style type="text/css">
+			p { text-align: left; }
+		</style>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
 				<section>Things to consider when thinking about security and WordPress</section>
+				<section data-transition="fade-out">
+					<h2>WordPress Core</h2>
+
+					<p>Very secure.</p>
+				</section>
+				<section data-transition="fade-in">
+					<section>
+						<h2>WordPress Core</h2>
+
+						<p>Very secure until people.</p>
+					</section>
+				</section>
+				<section>
+					<h2>How do you fix people?</h2>
+					<h2>🤷🏼‍♂️</h2>
+				</section>
+				<section>
+					<h2>People fixes</h2>
+
+					<p class="fragment">No shared accounts.<p>
+					<p class="fragment">Strong passwords.</p>
+					<p class="fragment">Work day to day as an Editor.</p>
+					<p class="fragment">Jetpack Two-factor authentication.</p>
+				</section>
+				<section>
+					<h2>People fixed.</h2>
+					<h2>✅</h2>
+				</section>
+				<section>
+					<h2>WordPress Core</h2>
+
+					<p>Very secure.</p>
+				</section>
+				<section>
+					<h2>WordPress Core</h2>
+
+					<p>Very secure until people.</p>
+				</section>
+				<section>
+					<h2>WordPress Core</h2>
+
+					<p>Very secure until site maintainers.</p>
+				</section>
+				<section>
+					<h2>How do you fix site maintainers?</h2>
+					<h2>🤷🏽‍♀️</h2>
+				</section>
+				<section>
+					<h2>Maintainer Fixes</h2>
+
+					<p class="fragment">Leave auto updates enabled.</p>
+					<p class="fragment">Keep plugins and themes updated.</p>
+					<p class="fragment">Source plugins and themes responsibly.</p>
+					<p class="fragment">Store regular backups.</p>
+					<p class="fragment">Disable the file editor.</p>
+				</section>
+				<section>
+					<h2>Disable the file editor</h2>
+
+					<pre><code>
+define( 'DISALLOW_FILE_EDIT', true );
+
+</code></pre>
+				</section>
+				<section>
+					<h2>Site maintainers fixed.</h2>
+					<h2>✅</h2>
+				</section>
+				<section>
+					<h2>Non-WordPress Code</h2>
+
+					<p>Very secure.</p>
+				</section>
+				<section>
+					<h2>Non-WordPress Code</h2>
+
+					<p>Very secure until it's written! 🙈</p>
+				</section>
+				<section>
+					<h2>Secure Non-WordPress Code</h2>
+
+					<p class="fragment">Escapes data right before output.</p>
+					<p class="fragment">Sanitizes data right before storage.</p>
+					<p class="fragment">Uses WordPress core APIs.</p>
+					<p class="fragment">Follows WordPress coding guidelines.</p>
+				</section>
+				<section>
+					<h2>Escape data before output</h2>
+
+					<pre><code class="php">
+$fancyid = get_post_meta( 123, 'id_name', true );
+echo '&lt;article class="' . $fancyid . '"&gt;';
+
+</code></pre>
+				</section>
+				<section>
+					<h2>Escape data before output</h2>
+
+<pre><code class="php">
+$fancyid = '"&gt; &lt;script&gt;alert( "HACKED" );&lt;/script&gt;&lt;a "';
+echo '&lt;p id="' . $fancyid . '"&gt;';
+
+// &lt;p class=""&gt; &lt;script&gt;alert("HACKED");&lt;/script&gt;&lt;a ""&gt;
+</code></pre>
+				</section>
+				<section>
+					<h2>Escape data before output</h2>
+
+<pre><code class="php">
+$fancyid = '"&gt; &lt;script&gt;alert( "HACKED" );&lt;/script&gt;&lt;a "';
+echo '&lt;p class="' . esc_attr( $fancyid ) . '"&gt;';
+
+// &lt;p id="&amp;quot;&amp;gt; &amp;lt;script&amp;gt;alert(&amp;quot;HACKED&amp;quot;);&amp;lt;/script&amp;gt;&amp;lt;a &amp;quot;"&gt;
+
+</code></pre>
+				</section>
+				<section>
+					<h2>Plugins should escape data</h2>
+
+					<p>If a plugin outputs anything, look through the code for <code>esc_*</code> functions.</p>
+				</section>
+
+				<section>
+					<h2>Sanitize data before storage</h2>
+
+<pre><code class="php">
+$fancyid = $_POST['new_id'];
+update_post_meta( 123, 'id_name', $fancyid );
+
+// "&gt; &lt;script&gt;alert("HACKED");&lt;/script&gt;&lt;a "
+</code></pre>
+				</section>
+				<section>
+					<h2>Sanitize data before storage</h2>
+
+<pre><code class="php">
+$fancyid = sanitize_key( $_POST['new_id'] );
+update_post_meta( 123, 'id_name', $fancyid );
+
+// scriptalerthackedscripta
+</code></pre>
+				</section>
+				<section>
+					<h2>Sanitize data before storage</h2>
+
+<pre><code class="php">
+$fancyid = sanitize_text_field( $_POST['new_id'] );
+update_post_meta( 123, 'id_name', $fancyid );
+
+// &quot;> &lt;a &quot;
+</code></pre>
+				</section>
+				<section>
+					<h2>Plugins should sanitize data</h2>
+
+					<p>If a plugin stores anything, look through the code for <code>sanitize_*</code> functions.</p>
+				</section>
+				<section>
+					<h2>Plugins should use WordPress APIs</h2>
+
+					<p class="fragment"><code>$wpdb</code></p>
+					<p class="fragment">HTTP API</p>
+				</section>
+				<section>
+					<h2>Plugins should follow WordPress code standards</h2>
+				</section>
 			</div>
 		</div>
-
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
 
@@ -35,6 +204,7 @@
 			// More info https://github.com/hakimel/reveal.js#configuration
 			Reveal.initialize({
 				history: true,
+				transition: 'fade',
 
 				// More info https://github.com/hakimel/reveal.js#dependencies
 				dependencies: [
